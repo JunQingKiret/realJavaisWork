@@ -1,0 +1,29 @@
+{
+  "markdown_source": "deliverables\\Java基础巩固到SpringBoot教学目标方案.md",
+  "word_output": "deliverables\\Java基础巩固到SpringBoot教学目标方案.docx",
+  "chapters": [
+    "一、任务目标",
+    "二、实训环境",
+    "三、实训原理",
+    "四、实训内容与步骤",
+    "五、实训截图",
+    "六、实训过程中遇到的问题与解决方法",
+    "七、实训发现与收获、未解决或需进一步解决的问题",
+    "八、思考题"
+  ],
+  "table_count": 11,
+  "all_markdown_text_preserved": true,
+  "paragraph_count_outside_tables": 123,
+  "word_bytes": 55172,
+  "paper": "A4 portrait",
+  "body_font": "宋体 11pt / Times New Roman",
+  "heading_font": "微软雅黑",
+  "table_font_pt": 9.5,
+  "header_rows_repeat": true,
+  "page_number_fields": [
+    "PAGE",
+    "NUMPAGES"
+  ],
+  "zip_and_xml_valid": true,
+  "rendered_page_review": "not performed; document structure and text checked"
+}

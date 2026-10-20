@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Agent 协作实验室｜第一周交互式课程演示</title>
+<style>
+:root{
+  --green:#1ed760;--green2:#1fdf64;--ink:#090909;--black:#121212;--paper:#f7f7f2;
+  --white:#fff;--muted:#a7a7a7;--line:rgba(255,255,255,.16);--danger:#ff5c5c;
+  --warning:#ffd166;--blue:#5b8cff;--shadow:0 24px 80px rgba(0,0,0,.22);
+  --font:Inter,"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Arial,sans-serif;
+}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:var(--font)}
+body{color:var(--white);-webkit-font-smoothing:antialiased}.deck{height:100dvh;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;padding:clamp(56px,7vh,92px) clamp(28px,7vw,112px) clamp(70px,8vh,96px);display:grid;align-content:center;opacity:0;visibility:hidden;transform:translateX(7%);transition:opacity .38s ease,transform .52s cubic-bezier(.2,.75,.25,1),visibility .52s;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+.slide.active{opacity:1;visibility:visible;transform:none;z-index:2}.slide.before{transform:translateX(-7%)}
+.slide.dark{background:var(--black);color:#fff}.slide.paper{background:var(--paper);color:var(--ink)}.slide.green{background:var(--green);color:var(--ink)}
+.slide::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle at 18% 16%,rgba(255,255,255,.055) 0 1px,transparent 1.5px);background-size:11px 11px;opacity:.22}
+.slide.paper::after{background-image:radial-gradient(circle at 18% 16%,rgba(0,0,0,.045) 0 1px,transparent 1.5px)}
+.content{position:relative;z-index:1;width:min(1500px,100%);margin:auto}.eyebrow{display:flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:.16em;font-size:clamp(11px,1.1vw,15px);font-weight:850}.eyebrow::before{content:"";width:36px;height:4px;border-radius:2px;background:var(--green)}.green .eyebrow::before{background:#000}
+.kicker{font-size:clamp(12px,1.05vw,15px);font-weight:800;letter-spacing:.12em;text-transform:uppercase}.muted{color:var(--muted)}.paper .muted{color:#5c5c5c}
+h1,h2,h3,p{margin:0}h1{font-size:clamp(48px,8.5vw,132px);line-height:.89;letter-spacing:-.065em;font-weight:950}h2{font-size:clamp(38px,6.2vw,92px);line-height:.94;letter-spacing:-.055em;font-weight:950}h3{font-size:clamp(20px,2.2vw,34px);line-height:1.05;letter-spacing:-.025em}.lead{font-size:clamp(18px,2vw,30px);line-height:1.5;font-weight:580;max-width:900px}.small{font-size:clamp(13px,1.2vw,17px);line-height:1.55}.micro{font-size:12px;line-height:1.45}.accent{color:var(--green)}.paper .accent{color:#10913d}.outline{color:transparent;-webkit-text-stroke:1.6px currentColor;opacity:.34}.green .outline{color:transparent;-webkit-text-stroke:1.6px #000;opacity:.28}
+.grid2{display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(28px,5vw,82px);align-items:center}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.stack{display:grid;gap:20px}.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}.mt{margin-top:clamp(24px,4vh,50px)}.mt-sm{margin-top:18px}
+.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:850;border:1px solid currentColor}.pill.green-pill{background:var(--green);color:#000;border-color:var(--green)}.pill.soft{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}.paper .pill.soft{background:#fff;border-color:#ddd}
+.btn{appearance:none;border:0;border-radius:999px;padding:13px 19px;font:800 14px var(--font);cursor:pointer;background:var(--green);color:#071108;transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;box-shadow:0 8px 30px rgba(30,215,96,.18)}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.btn:active{transform:translateY(0) scale(.98)}.btn.secondary{background:transparent;color:currentColor;border:1px solid currentColor;box-shadow:none}.btn.danger{background:var(--danger);color:#111}.btn:focus-visible,.navbtn:focus-visible,.dot:focus-visible,.card:focus-visible,input:focus-visible{outline:3px solid var(--warning);outline-offset:3px}
+.card{border-radius:26px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.13);padding:22px;box-shadow:0 12px 36px rgba(0,0,0,.12)}.paper .card{background:#fff;border-color:#e5e5df;box-shadow:0 16px 42px rgba(0,0,0,.07)}.green .card{background:rgba(255,255,255,.72);border-color:rgba(0,0,0,.13)}
+.card h3{margin-bottom:10px}.number{font-size:clamp(36px,5vw,72px);font-weight:950;line-height:.9;letter-spacing:-.055em}.label{font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;opacity:.68}
+.navbar{position:fixed;z-index:20;left:0;right:0;bottom:0;height:54px;display:flex;align-items:center;gap:16px;padding:0 22px;background:linear-gradient(transparent,rgba(0,0,0,.82));color:white}.progress-track{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.16)}.progress-bar{height:100%;width:0;background:var(--green);transition:width .35s ease}.brand{font-size:12px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap}.pagecount{font:800 12px/1 var(--font);font-variant-numeric:tabular-nums;margin-left:auto}.navbtn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.34);background:rgba(12,12,12,.42);color:white;cursor:pointer;font-size:18px;display:grid;place-items:center}.navbtn:hover{background:var(--green);color:#000;border-color:var(--green)}
+.dots{display:flex;gap:7px;align-items:center;overflow:hidden;max-width:42vw}.dot{border:0;width:8px;height:8px;border-radius:50%;padding:0;background:rgba(255,255,255,.34);cursor:pointer;transition:.2s}.dot.active{width:25px;border-radius:8px;background:var(--green)}
+.vinyl{width:min(37vw,500px);aspect-ratio:1;border-radius:50%;position:relative;background:repeating-radial-gradient(circle at 50%,#050505 0 5px,#171717 6px 9px);box-shadow:0 38px 80px rgba(0,0,0,.6);animation:spin 20s linear infinite}.vinyl::before{content:"";position:absolute;inset:28%;border-radius:50%;background:var(--green);box-shadow:inset 0 0 0 12px rgba(0,0,0,.08)}.vinyl::after{content:"";position:absolute;inset:47%;border-radius:50%;background:#0b0b0b}.vinyl .word{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-20deg);z-index:2;color:#000;font-weight:950;letter-spacing:-.04em;font-size:clamp(16px,2vw,28px)}
+.eq{height:74px;display:flex;gap:8px;align-items:flex-end}.eq span{width:8px;border-radius:8px;background:var(--green);height:var(--h);animation:bounce 1.2s ease-in-out infinite alternate;animation-delay:var(--d)}
+.big-eq{position:absolute;right:-3vw;bottom:9vh;opacity:.15;transform:scale(2.7);transform-origin:right bottom}
+.hero-meta{display:flex;gap:13px;flex-wrap:wrap;margin-top:28px}.hero-line{width:min(520px,72vw);height:10px;background:#222;border-radius:99px;overflow:hidden;margin-top:34px}.hero-line span{display:block;width:72%;height:100%;background:var(--green)}
+.arc{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.arc .card{min-height:230px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .25s ease,background .25s}.arc .card:hover{transform:translateY(-8px);background:rgba(255,255,255,.12)}.arc .step{font-size:13px;font-weight:900;letter-spacing:.1em}.arc .icon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:#000;font-size:25px;font-weight:950}
+.claim{font-size:clamp(56px,9vw,142px);font-weight:950;line-height:.82;letter-spacing:-.075em}.neq{display:inline-grid;place-items:center;width:.9em;height:.9em;border-radius:50%;background:var(--green);color:#000;transform:rotate(-7deg)}
+.switcher{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center}.statement{border-radius:24px;padding:24px;background:#1a1a1a;border:1px solid #333;min-height:180px}.statement.verified{background:#eafff1;color:#06170c;border-color:#91eaae}.arrow{font-size:44px;color:var(--green)}
+.chain{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:center}.chain-node{min-height:116px;border:0;border-radius:22px;padding:15px;background:#fff;color:#111;text-align:left;cursor:pointer;position:relative;box-shadow:0 12px 28px rgba(0,0,0,.08);transition:.2s}.chain-node:hover,.chain-node.active{transform:translateY(-6px);box-shadow:0 18px 35px rgba(0,0,0,.15)}.chain-node.active{background:var(--green)}.chain-node .n{font-size:11px;font-weight:900;opacity:.55}.chain-node strong{display:block;margin-top:18px;font-size:17px}.chain-node:not(:last-child)::after{content:"→";position:absolute;right:-15px;top:43%;z-index:3;font-size:19px;font-weight:900}.chain-detail{margin-top:20px;border-left:8px solid var(--green);padding:18px 22px;background:#fff;border-radius:0 18px 18px 0;min-height:92px}
+.roles{display:grid;grid-template-columns:330px 1fr;gap:24px}.role-tabs{display:grid;gap:10px}.role-tab{border:1px solid #ddd;background:#fff;border-radius:16px;padding:14px 16px;text-align:left;font:800 15px var(--font);cursor:pointer}.role-tab.active{background:#111;color:#fff;border-color:#111}.role-panel{border-radius:28px;background:#111;color:#fff;padding:30px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}.role-badge{width:150px;height:150px;border-radius:50%;background:var(--green);color:#000;display:grid;place-items:center;font-size:54px;font-weight:950}
+.timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:11px}.time-card{border-radius:20px;background:#1c1c1c;border:1px solid #333;padding:18px;min-height:185px;display:flex;flex-direction:column;justify-content:space-between}.time-card strong{font-size:24px;color:var(--green)}.time-card .mins{font-size:13px;color:#aaa}.timeline-meter{height:14px;border-radius:99px;background:#2a2a2a;overflow:hidden}.timeline-meter span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--green),#b7ffce);transition:width .5s ease}
+.draft-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px}.draft{background:#fff;color:#111;border-radius:28px;padding:26px;min-height:430px;box-shadow:var(--shadow)}.draft h3{font-size:28px}.draft-item{border-radius:15px;border:1px solid #ddd;padding:14px;margin-top:12px;cursor:pointer;transition:.2s;position:relative}.draft-item:hover{border-color:#999}.draft-item.flagged{background:#fff0f0;border-color:var(--danger);padding-right:46px}.draft-item.flagged::after{content:"!";position:absolute;right:14px;top:50%;transform:translateY(-50%);width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:var(--danger);font-weight:950}.issue-log{display:grid;gap:10px}.issue{border-left:5px solid #444;padding:12px 14px;background:#191919;border-radius:0 15px 15px 0;color:#bbb}.issue.on{border-color:var(--danger);color:#fff;background:#291717}
+.checker{display:grid;grid-template-columns:1.15fr .85fr;gap:24px}.scoreboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.score{border-radius:22px;background:#fff;color:#111;padding:18px}.score.good{border-top:8px solid var(--green)}.score.bad{border-top:8px solid var(--danger)}.score.wait{border-top:8px solid var(--warning)}.scan{background:#0c0c0c;border:1px solid #292929;border-radius:24px;padding:24px;min-height:320px;position:relative;overflow:hidden}.scan-line{position:absolute;left:0;right:0;height:3px;background:var(--green);box-shadow:0 0 25px var(--green);top:-5px;opacity:0}.scan.running .scan-line{opacity:1;animation:scan 1.35s ease-in-out 2}.logline{font:600 14px/1.8 Consolas,monospace;color:#8cffa9}.logline::before{content:"> ";color:#666}
+.codebox{background:#0d0d0d;color:#e7e7e7;border-radius:22px;padding:22px;overflow:auto;min-height:330px;box-shadow:var(--shadow)}pre{margin:0;font:600 clamp(12px,1.05vw,16px)/1.62 Consolas,"Courier New",monospace;white-space:pre-wrap}.del{color:#ff9191;background:rgba(255,80,80,.08)}.add{color:#7effa5;background:rgba(30,215,96,.09)}.code-tabs{display:flex;gap:9px;margin-bottom:13px}.code-tab{border:1px solid #444;color:#bbb;background:transparent;border-radius:999px;padding:8px 13px;font-weight:800;cursor:pointer}.code-tab.active{background:var(--green);color:#000;border-color:var(--green)}
+.lab{display:grid;grid-template-columns:.9fr 1.1fr;gap:24px}.lab-controls{display:grid;gap:14px}.field{display:grid;gap:7px}.field label{font-size:13px;font-weight:850}.field input{width:100%;border:1px solid #d6d6d0;border-radius:14px;padding:13px 14px;font:700 15px var(--font);background:#fff}.results{background:#111;color:#fff;border-radius:25px;padding:22px;min-height:340px}.result-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;border-bottom:1px solid #333;padding:12px 0}.qty{font-weight:950;color:var(--green)}.loc{font-size:12px;color:#aaa}.empty{display:grid;place-items:center;height:260px;color:#777;text-align:center}
+.results .pill.soft{background:#242424;border-color:#444;color:#fff}.field input[type=range]{accent-color:var(--green);padding:0;border:0}
+.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.decision-card{border-radius:24px;background:#fff;color:#111;padding:24px;min-height:280px;display:flex;flex-direction:column}.decision-card .actions{margin-top:auto;display:flex;gap:9px}.feedback{min-height:52px;margin-top:12px;font-size:13px;font-weight:750}.feedback.ok{color:#087b31}.feedback.no{color:#bf1e2e}
+.rubric{display:grid;grid-template-columns:1fr 1fr;gap:24px}.sliders{display:grid;gap:13px}.slider-row{display:grid;grid-template-columns:170px 1fr 48px;gap:12px;align-items:center}.slider-row label{font-size:13px;font-weight:800}.slider-row input{accent-color:var(--green)}.total-ring{width:min(270px,35vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) var(--score,0%),#222 0);position:relative}.total-ring::after{content:"";position:absolute;inset:15%;background:#111;border-radius:50%}.total-ring span{position:relative;z-index:1;font-size:60px;font-weight:950}.total-ring small{display:block;font-size:13px;color:#aaa;text-align:center}
+.checklist{display:grid;grid-template-columns:1fr .8fr;gap:26px}.check-items{display:grid;gap:10px}.check-item{display:flex;gap:12px;align-items:center;border-radius:16px;background:#fff;color:#111;padding:14px 16px;cursor:pointer}.check-item input{width:20px;height:20px;accent-color:var(--green)}.check-item.done span{text-decoration:line-through;opacity:.55}.completion{border-radius:30px;background:#111;padding:28px;display:grid;place-items:center;text-align:center}.completion .number{color:var(--green)}
+.wave{display:flex;align-items:end;gap:6px;height:70px}.wave i{display:block;width:9px;border-radius:9px;background:#000;height:var(--h);opacity:var(--o,.9)}
+.overview,.help,.notes{position:fixed;inset:0;z-index:50;background:rgba(4,4,4,.96);color:#fff;padding:70px;overflow:auto;display:none}.overview.open,.help.open,.notes.open{display:block}.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:28px}.thumb{border:1px solid #333;background:#151515;color:#fff;border-radius:18px;padding:18px;min-height:145px;text-align:left;cursor:pointer}.thumb:hover{border-color:var(--green);transform:translateY(-2px)}.thumb strong{display:block;color:var(--green);margin-bottom:30px}.close{position:fixed;right:28px;top:25px}.help-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:780px;margin-top:25px}.key{display:flex;justify-content:space-between;border-bottom:1px solid #333;padding:12px 0}.kbd{border:1px solid #666;border-bottom-width:3px;border-radius:7px;padding:4px 8px;font:800 12px var(--font)}
+.toast{position:fixed;z-index:60;top:22px;left:50%;transform:translate(-50%,-20px);background:#fff;color:#111;border-radius:999px;padding:11px 17px;font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:.24s;box-shadow:var(--shadow)}.toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes bounce{to{height:18px}}@keyframes scan{0%{top:-5px}100%{top:102%}}
+@media(max-width:900px){.grid2,.draft-grid,.checker,.lab,.rubric,.checklist{grid-template-columns:1fr}.grid3,.arc,.decision{grid-template-columns:1fr}.chain{grid-template-columns:repeat(3,1fr)}.timeline{grid-template-columns:repeat(2,1fr)}.roles{grid-template-columns:1fr}.role-tabs{grid-template-columns:repeat(2,1fr)}.role-panel{grid-template-columns:1fr}.role-badge{width:90px;height:90px}.vinyl{width:min(68vw,380px);margin:auto}.slide{align-content:start}.dots{display:none}}
+@media(max-height:690px){.slide{padding-top:45px;padding-bottom:62px}.mt{margin-top:20px}.card{padding:16px}.timeline .time-card{min-height:138px}.draft{min-height:340px}.draft-item{padding:9px;margin-top:7px}.scan,.codebox,.results{min-height:260px}}
+@media print{html,body{overflow:visible;background:#fff}.deck{height:auto}.slide{position:relative!important;opacity:1!important;visibility:visible!important;transform:none!important;height:100vh;page-break-after:always;overflow:hidden}.navbar,.overview,.help,.notes,.toast{display:none!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck" aria-live="polite">
+<section class="slide dark active" data-title="封面" data-notes="开场不要先解释技术。先问学生：如果 Agent 生成了一份非常漂亮的仓库导览，你会直接相信吗？">
+  <div class="content grid2">
+    <div>
+      <div class="eyebrow">Week 01 · Agent Collaboration Lab</div>
+      <h1 class="mt-sm">Agent<br><span class="accent">协作实验室</span></h1>
+      <p class="lead mt">让 Agent 先惊艳，再让证据说话。<br>用 Java 工具把“会写”变成“写得对”。</p>
+      <div class="hero-meta">
+        <span class="pill green-pill">103 仓库数字导览</span><span class="pill soft">10 人线上课</span><span class="pill soft">FAKE 模式</span>
+      </div>
+      <div class="hero-line"><span></span></div>
+    </div>
+    <div class="vinyl" aria-label="抽象唱片视觉"><span class="word">VERIFY</span></div>
+  </div>
+  <div class="eq big-eq" aria-hidden="true"><span style="--h:52px;--d:-.1s"></span><span style="--h:31px;--d:-.6s"></span><span style="--h:67px;--d:-.3s"></span><span style="--h:43px;--d:-.8s"></span><span style="--h:72px;--d:-.2s"></span><span style="--h:38px;--d:-.5s"></span></div>
+</section>
+
+<section class="slide dark" data-title="课程剧情" data-notes="三幕不是三段讲授，而是同一份作品不断变化。每一幕都要让学生先观察，再说结论。">
+  <div class="content">
+    <div class="eyebrow">一堂课的三幕剧情</div>
+    <h2 class="mt-sm">先被吸引，<span class="accent">再学会怀疑</span></h2>
+    <div class="arc mt">
+      <article class="card"><div class="row space"><span class="step">ACT 01</span><span class="icon">✦</span></div><div><h3>快速生成</h3><p class="small muted mt-sm">Agent 在几十秒内给出漂亮的数字导览，让学生看到它的速度与表达能力。</p></div></article>
+      <article class="card"><div class="row space"><span class="step">ACT 02</span><span class="icon">?</span></div><div><h3>发现破绽</h3><p class="small muted mt-sm">找出虚构开放时间、错误库存和没有来源的安全规则。</p></div></article>
+      <article class="card"><div class="row space"><span class="step">ACT 03</span><span class="icon">✓</span></div><div><h3>工具验证</h3><p class="small muted mt-sm">查看参数、Java 方法和返回值；用证据修正作品，而不是凭感觉接受。</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="slide green" data-title="核心观点" data-notes="停顿三秒，让学生读完公式。再请一名学生举例：怎样的回答很流畅却可能是错的？">
+  <div class="content">
+    <div class="kicker">本周只记住这一句话</div>
+    <div class="claim mt">语言流畅 <span class="neq">≠</span><br>事实正确</div>
+    <div class="row space mt">
+      <p class="lead">生成内容需要表达能力；可信结果还需要数据、工具、测试和人工判断。</p>
+      <div class="wave" aria-hidden="true"><i style="--h:26px"></i><i style="--h:58px;--o:.55"></i><i style="--h:42px"></i><i style="--h:68px;--o:.5"></i><i style="--h:34px"></i><i style="--h:61px;--o:.7"></i><i style="--h:48px"></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" data-title="从初稿到事实" data-notes="点击按钮切换两侧内容。重点指出：不是让 Agent 少说，而是要求关键事实必须有证据。">
+  <div class="content">
+    <div class="eyebrow">同一句话，两种可信度</div>
+    <h2 class="mt-sm">从“像真的”到<span class="accent">有证据</span></h2>
+    <div class="switcher mt">
+      <div class="statement"><span class="pill soft">Agent 初稿</span><h3 class="mt-sm">“仓库每天 8:00–22:00 开放，D 区配有灭火器。”</h3><p class="small muted mt-sm">措辞自然，但课程资料与工具均未提供这些事实。</p></div>
+      <div class="arrow">→</div>
+      <div class="statement verified"><span class="pill green-pill">核验后</span><h3 class="mt-sm">“开放时间待管理员确认；安全规则仅展示工具返回的已备案内容。”</h3><p class="small mt-sm">保留不确定性，并明确下一步验证责任。</p></div>
+    </div>
+    <div class="row mt"><button class="btn" id="truthPulse">播放核验节拍</button><span class="small muted" id="truthStatus">点击后观察证据如何改变表达</span></div>
+  </div>
+</section>
+
+<section class="slide paper" data-title="调用链" data-notes="依次点击六个节点。每一步都追问学生：这一层可能错在哪里？人应该检查什么？">
+  <div class="content">
+    <div class="eyebrow">最小调用链</div>
+    <h2 class="mt-sm">Agent 不会魔法，<br>它只是在<span class="accent">调用能力</span></h2>
+    <div class="chain mt" id="chain">
+      <button class="chain-node active" data-detail="目标、受众、限制和验收标准由人说明；需求不清时，后面每一步都会偏。"><span class="n">01</span><strong>用户问题</strong></button>
+      <button class="chain-node" data-detail="Agent 根据描述选择工具。选择错工具、漏工具，都会让结果失真。"><span class="n">02</span><strong>Agent 选择工具</strong></button>
+      <button class="chain-node" data-detail="参数是可检查的证据：keyword 是什么？threshold 为什么是 5？"><span class="n">03</span><strong>工具参数</strong></button>
+      <button class="chain-node" data-detail="Java 方法执行真实逻辑。循环、判断、List 和异常处理都在这里发挥作用。"><span class="n">04</span><strong>Java 方法</strong></button>
+      <button class="chain-node" data-detail="返回值必须区分：找到、未找到、输入无效、工具失败。不要都返回空字符串。"><span class="n">05</span><strong>工具结果</strong></button>
+      <button class="chain-node" data-detail="Agent 组织最终语言，但不能把未知事实补成确定结论；人仍要验收。"><span class="n">06</span><strong>最终回答</strong></button>
+    </div>
+    <div class="chain-detail" id="chainDetail"><strong>01 用户问题：</strong>目标、受众、限制和验收标准由人说明；需求不清时，后面每一步都会偏。</div>
+  </div>
+</section>
+
+<section class="slide paper" data-title="协作角色" data-notes="两队各五人。强调角色会轮换，团队作品不能替代个人掌握。点击角色展示职责。">
+  <div class="content">
+    <div class="eyebrow">A / B 两队 × 五个角色</div>
+    <div class="row space mt-sm"><h2>每个人都必须<span class="accent">留下证据</span></h2><span class="pill">连续两周不得重复驾驶员或汇报员</span></div>
+    <div class="roles mt">
+      <div class="role-tabs" id="roleTabs">
+        <button class="role-tab active" data-icon="⌨" data-title="驾驶员" data-text="共享屏幕、运行项目、输入命令；必须边操作边说明，不做沉默代打。">驾驶员</button>
+        <button class="role-tab" data-icon="{}" data-title="代码观察员" data-text="检查 Java 方法、Diff 和测试结果；阻止一次性接受过大改动。">代码观察员</button>
+        <button class="role-tab" data-icon="AI" data-title="Agent 观察员" data-text="记录计划、工具名称、参数和回答；指出 Agent 做了哪些选择。">Agent 观察员</button>
+        <button class="role-tab" data-icon="✓" data-title="事实核验员" data-text="查找虚构、冲突和缺少证据的内容；要求关键结论能追溯来源。">事实核验员</button>
+        <button class="role-tab" data-icon="↗" data-title="汇报员" data-text="用 60–90 秒讲清任务、问题、修改、验证和仍不确定的部分。">汇报员</button>
+      </div>
+      <div class="role-panel"><div><div class="kicker accent" id="roleKicker">ROLE 01</div><h3 id="roleTitle" style="font-size:44px;margin-top:12px">驾驶员</h3><p class="lead mt-sm" id="roleText">共享屏幕、运行项目、输入命令；必须边操作边说明，不做沉默代打。</p></div><div class="role-badge" id="roleIcon">⌨</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" data-title="90分钟流程" data-notes="点击开始时间线，快速预演课堂节奏。若环境问题多，使用教师共享环境，不让安装占用主课。">
+  <div class="content">
+    <div class="eyebrow">周日线上主课 · 90 分钟</div>
+    <div class="row space mt-sm"><h2>节奏比内容数量<span class="accent">更重要</span></h2><button class="btn" id="playTimeline">预演课堂节奏</button></div>
+    <div class="timeline mt" id="timeline">
+      <div class="time-card"><div><span class="mins">00–08</span><strong>投票</strong></div><p class="small muted">你会直接相信漂亮的 Agent 输出吗？</p></div>
+      <div class="time-card"><div><span class="mins">08–25</span><strong>惊艳</strong></div><p class="small muted">现场生成 103 仓库数字导览。</p></div>
+      <div class="time-card"><div><span class="mins">25–42</span><strong>找错</strong></div><p class="small muted">标记虚构事实与数据冲突。</p></div>
+      <div class="time-card"><div><span class="mins">42–60</span><strong>追踪</strong></div><p class="small muted">观察工具名、参数和返回值。</p></div>
+      <div class="time-card"><div><span class="mins">60–80</span><strong>修复</strong></div><p class="small muted">修改一个 Java 搜索工具。</p></div>
+      <div class="time-card"><div><span class="mins">80–90</span><strong>验证</strong></div><p class="small muted">运行场景、离场票、下周计划。</p></div>
+    </div>
+    <div class="timeline-meter mt-sm"><span id="timelineMeter"></span></div>
+  </div>
+</section>
+<section class="slide dark" data-title="找出虚构" data-notes="让学生逐项点击左侧初稿。每点击一条，右侧显示对应问题。不要替学生太快揭晓。">
+  <div class="content">
+    <div class="eyebrow">互动：点击可疑内容</div>
+    <div class="row space mt-sm"><h2>漂亮初稿里，<span class="accent">藏了什么？</span></h2><span class="pill soft"><span id="flagCount">0</span> / 4 已标记</span></div>
+    <div class="draft-grid mt">
+      <div class="draft">
+        <span class="pill green-pill">Agent 直接生成</span><h3 class="mt-sm">欢迎来到 103 智能仓库</h3>
+        <div class="draft-item" tabindex="0" data-issue="资料没有给出开放时间，属于无来源事实。">每天 8:00–22:00 开放，欢迎随时参观。</div>
+        <div class="draft-item" tabindex="0" data-issue="工具返回物品种类 9，不是 120。">仓库拥有 120 类物品，库存非常充足。</div>
+        <div class="draft-item" tabindex="0" data-issue="数据中没有 D 区灭火器记录，不能自行补全。">消防设施：D 区入口右侧配置灭火器。</div>
+        <div class="draft-item" tabindex="0" data-issue="无线鼠标数量为 1，应该标记低库存。">热门物品：无线鼠标，库存充足。</div>
+      </div>
+      <div><div class="kicker">问题记录</div><div class="issue-log mt-sm" id="issueLog"><div class="issue">等待你标记第一条可疑内容</div><div class="issue">关键数字必须来自工具或资料</div><div class="issue">未知事实应明确写“待确认”</div><div class="issue">冲突内容必须修订后才能发布</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" data-title="事实核验" data-notes="点击运行事实核验。让学生观察三个指标变化，并解释为什么‘缺少证据’与‘冲突’不是同一种问题。">
+  <div class="content">
+    <div class="eyebrow">允许工具 + 运行事实核验</div>
+    <div class="row space mt-sm"><h2>让证据进入<span class="accent">作品回路</span></h2><button class="btn" id="runCheck">运行事实核验</button></div>
+    <div class="checker mt">
+      <div class="scan" id="scanBox"><div class="scan-line"></div><div class="kicker">TRACE LOG</div><div id="checkLog" class="mt-sm"><div class="logline">等待开始…</div></div></div>
+      <div class="scoreboard">
+        <div class="score good"><div class="label">已验证</div><div class="number" id="verifiedNum">2</div><p class="small mt-sm">有工具或资料证据</p></div>
+        <div class="score wait"><div class="label">缺少证据</div><div class="number" id="missingNum">5</div><p class="small mt-sm">需要确认或删去</p></div>
+        <div class="score bad"><div class="label">数据冲突</div><div class="number" id="conflictNum">2</div><p class="small mt-sm">必须立即修订</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide paper" data-title="Java修复" data-notes="先展示修复前：遇到第一条就 return。再切换修复后：规范化关键字、遍历全部物品、返回 List。">
+  <div class="content">
+    <div class="eyebrow">一个小 Bug，改变 Agent 的答案</div>
+    <div class="row space mt-sm"><h2>搜索工具只返回<span class="accent">第一条</span></h2><div class="code-tabs"><button class="code-tab active" data-code="before">修复前</button><button class="code-tab" data-code="after">修复后</button></div></div>
+    <div class="grid2 mt">
+      <div class="codebox"><pre id="codeBefore"><span class="del">public Item search(String keyword) {
+    for (Item item : items) {
+        if (item.name().contains(keyword)) {
+            return item; // 第一条后立即结束
+        }
+    }
+    return null;
+}</span></pre><pre id="codeAfter" hidden><span class="add">public List&lt;Item&gt; search(String keyword) {
+    String term = keyword == null
+        ? "" : keyword.trim().toLowerCase();
+
+    if (term.isBlank()) return List.of();
+
+    return items.stream()
+        .filter(item -&gt; item.name()
+            .toLowerCase().contains(term))
+        .toList();
+}</span></pre></div>
+      <div class="stack"><div class="card"><div class="label">问题</div><h3 class="mt-sm">Agent 得到不完整数据，却可能写成完整结论</h3></div><div class="card"><div class="label">修复目标</div><p class="lead mt-sm">统一输入 → 找全结果 → 明确空结果 → 用 3 个场景验证。</p></div><div class="row"><span class="pill">正常：鼠标</span><span class="pill">边界：空格</span><span class="pill">异常：null</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide paper" data-title="库存实验" data-notes="让学生输入‘鼠标’、‘键盘’或留空。再切换低库存阈值，观察结果和状态变化。">
+  <div class="content">
+    <div class="eyebrow">互动实验：模拟 Java 工具结果</div>
+    <h2 class="mt-sm">输入参数，观察<span class="accent">返回值</span></h2>
+    <div class="lab mt">
+      <div class="card lab-controls">
+        <div class="field"><label for="keyword">search_inventory(keyword)</label><input id="keyword" value="鼠标" autocomplete="off"></div>
+        <div class="field"><label for="threshold">低库存阈值：<span id="thresholdValue">5</span></label><input id="threshold" type="range" min="1" max="12" value="5"></div>
+        <div class="row"><button class="btn" id="searchBtn">执行搜索</button><button class="btn secondary" id="lowBtn">只看低库存</button></div>
+        <p class="small muted">验证问题：空输入应该返回全部、空列表，还是输入错误？必须由工具契约明确。</p>
+      </div>
+      <div class="results"><div class="row space"><span class="kicker accent">TOOL RESULT</span><span class="pill soft" id="resultMeta">keyword=鼠标</span></div><div id="resultList" class="mt-sm"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" data-title="安全边界" data-notes="每张卡片都问：Agent 能否自动执行？搜索可直接执行；批量修改和删除需要确认、权限和审计。">
+  <div class="content">
+    <div class="eyebrow">互动判断：Agent 能直接做吗？</div>
+    <h2 class="mt-sm">能力越强，<span class="accent">边界越清楚</span></h2>
+    <div class="decision mt">
+      <article class="decision-card"><span class="pill green-pill">读取</span><h3 class="mt-sm">搜索“鼠标”库存</h3><p class="small mt-sm">只读取公开的虚构教学数据。</p><div class="feedback"></div><div class="actions"><button class="btn choose" data-answer="yes" data-correct="yes">可直接执行</button><button class="btn secondary choose" data-answer="no" data-correct="yes">需确认</button></div></article>
+      <article class="decision-card"><span class="pill">修改</span><h3 class="mt-sm">把全部库存数量减半</h3><p class="small mt-sm">批量改变业务数据，影响范围大。</p><div class="feedback"></div><div class="actions"><button class="btn choose" data-answer="yes" data-correct="no">可直接执行</button><button class="btn secondary choose" data-answer="no" data-correct="no">需确认</button></div></article>
+      <article class="decision-card"><span class="pill">删除</span><h3 class="mt-sm">删除“无用物品”记录</h3><p class="small mt-sm">“无用”的标准不明确，且删除不可轻易恢复。</p><div class="feedback"></div><div class="actions"><button class="btn choose" data-answer="yes" data-correct="no">可直接执行</button><button class="btn secondary choose" data-answer="no" data-correct="no">需确认</button></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" data-title="评价计算器" data-notes="拖动滑块模拟一个学生的表现。强调三项硬门槛：个人贡献、验证证据、独立解释。">
+  <div class="content">
+    <div class="eyebrow">通过不是“页面很漂亮”</div>
+    <div class="row space mt-sm"><h2>证据驱动的<span class="accent">评价</span></h2><span class="pill soft" id="passState">调整分数查看结果</span></div>
+    <div class="rubric mt">
+      <div class="card sliders" id="sliders">
+        <div class="slider-row"><label>Agent 局限识别 /20</label><input type="range" min="0" max="20" value="16"><output>16</output></div>
+        <div class="slider-row"><label>Java 工具贡献 /25</label><input type="range" min="0" max="25" value="18" data-gate="contribution"><output>18</output></div>
+        <div class="slider-row"><label>验证与证据 /20</label><input type="range" min="0" max="20" value="15" data-gate="evidence"><output>15</output></div>
+        <div class="slider-row"><label>协作过程 /15</label><input type="range" min="0" max="15" value="12"><output>12</output></div>
+        <div class="slider-row"><label>独立解释 /15</label><input type="range" min="0" max="15" value="10" data-gate="explain"><output>10</output></div>
+        <div class="slider-row"><label>安全与记录 /5</label><input type="range" min="0" max="5" value="5"><output>5</output></div>
+      </div>
+      <div style="display:grid;place-items:center"><div class="total-ring" id="totalRing"><span><b id="totalScore">76</b><small>/ 100</small></span></div><p class="small muted mt-sm" id="gateText">达到 70 分，且三项硬门槛均有证据。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide paper" data-title="课后任务" data-notes="清单会保存在当前浏览器。提醒学生：真实提交、真实运行结果，不补造过程记录。">
+  <div class="content">
+    <div class="eyebrow">60–90 分钟个人任务</div>
+    <h2 class="mt-sm">把团队体验变成<span class="accent">个人能力</span></h2>
+    <div class="checklist mt">
+      <div class="check-items" id="taskList">
+        <label class="check-item"><input type="checkbox" data-task="tool"><span>完成本人档位的搜索工具任务</span></label>
+        <label class="check-item"><input type="checkbox" data-task="cases"><span>运行至少 3 个验证场景</span></label>
+        <label class="check-item"><input type="checkbox" data-task="commit"><span>保存 1 次有意义的 Git 提交</span></label>
+        <label class="check-item"><input type="checkbox" data-task="log"><span>填写问题记录与 AI 使用记录</span></label>
+        <label class="check-item"><input type="checkbox" data-task="talk"><span>准备 60–90 秒个人汇报</span></label>
+        <label class="check-item"><input type="checkbox" data-task="safe"><span>确认仓库、截图和聊天中没有 API Key</span></label>
+      </div>
+      <div class="completion"><div><div class="number" id="completionNum">0%</div><h3 class="mt-sm">完成进度</h3><p class="small muted mt-sm">本页勾选状态会保存在浏览器本地。</p><button class="btn secondary mt" id="resetTasks">重置清单</button></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide green" data-title="结论" data-notes="最后请每名学生完成一句话：Agent 帮了什么？它为什么可能错？我怎样证明结果可信？">
+  <div class="content">
+    <div class="kicker">离场票 · 用自己的话完成</div>
+    <h2 class="mt">人定义<span class="outline">目标</span><br>Agent 协助<span class="outline">生成</span><br>Java 提供<span class="outline">能力</span><br>证据完成<span class="outline">验收</span></h2>
+    <div class="row space mt"><p class="lead">不是把任务全部交给 Agent，<br>而是建立一条可以解释、检查和复现的协作链。</p><div><div class="number">01</div><div class="label">Week complete</div></div></div>
+  </div>
+</section>
+</div>
+
+<nav class="navbar" aria-label="演示导航"><span class="brand">Agent Lab · W01</span><button class="navbtn" id="prev" aria-label="上一页">‹</button><button class="navbtn" id="next" aria-label="下一页">›</button><div class="dots" id="dots"></div><span class="pagecount" id="pagecount">01 / 14</span><div class="progress-track"><div class="progress-bar" id="progress"></div></div></nav>
+<div class="toast" id="toast"></div>
+<div class="overview" id="overview"><button class="btn secondary close" data-close="overview">关闭 Esc</button><div class="eyebrow">Overview</div><h2 class="mt-sm">幻灯片总览</h2><div class="overview-grid" id="overviewGrid"></div></div>
+<div class="help" id="help"><button class="btn secondary close" data-close="help">关闭 Esc</button><div class="eyebrow">Controls</div><h2 class="mt-sm">演示控制</h2><div class="help-grid"><div class="key"><span>下一页</span><span class="kbd">→ / Space</span></div><div class="key"><span>上一页</span><span class="kbd">←</span></div><div class="key"><span>总览</span><span class="kbd">O</span></div><div class="key"><span>演讲备注</span><span class="kbd">N</span></div><div class="key"><span>全屏</span><span class="kbd">F</span></div><div class="key"><span>帮助</span><span class="kbd">H</span></div></div></div>
+<div class="notes" id="notes"><button class="btn secondary close" data-close="notes">关闭 Esc</button><div class="eyebrow">Speaker Notes</div><h2 class="mt-sm" id="noteTitle">封面</h2><p class="lead mt" id="noteText"></p></div>
+<script>
+(() => {
+  'use strict';
+  const slides = [...document.querySelectorAll('.slide')];
+  const dots = document.getElementById('dots');
+  const progress = document.getElementById('progress');
+  const pagecount = document.getElementById('pagecount');
+  const overview = document.getElementById('overview');
+  const help = document.getElementById('help');
+  const notes = document.getElementById('notes');
+  const toastEl = document.getElementById('toast');
+  let current = Math.max(0, Math.min(slides.length - 1, Number(location.hash.replace('#slide-', '')) - 1 || 0));
+  let touchX = null;
+
+  const pad = n => String(n).padStart(2, '0');
+  const toast = text => {
+    toastEl.textContent = text;
+    toastEl.classList.add('show');
+    clearTimeout(toastEl._timer);
+    toastEl._timer = setTimeout(() => toastEl.classList.remove('show'), 1700);
+  };
+
+  slides.forEach((slide, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot';
+    dot.setAttribute('aria-label', `第 ${i + 1} 页：${slide.dataset.title}`);
+    dot.addEventListener('click', () => go(i));
+    dots.appendChild(dot);
+
+    const thumb = document.createElement('button');
+    thumb.className = 'thumb';
+    thumb.innerHTML = `<strong>${pad(i + 1)}</strong><h3>${slide.dataset.title}</h3>`;
+    thumb.addEventListener('click', () => { go(i); closeOverlays(); });
+    document.getElementById('overviewGrid').appendChild(thumb);
+  });
+
+  function go(index) {
+    current = Math.max(0, Math.min(slides.length - 1, index));
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === current);
+      s.classList.toggle('before', i < current);
+      s.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+    });
+    [...dots.children].forEach((d, i) => d.classList.toggle('active', i === current));
+    progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+    pagecount.textContent = `${pad(current + 1)} / ${pad(slides.length)}`;
+    document.getElementById('noteTitle').textContent = slides[current].dataset.title;
+    document.getElementById('noteText').textContent = slides[current].dataset.notes || '本页暂无备注。';
+    history.replaceState(null, '', `#slide-${current + 1}`);
+    document.title = `${slides[current].dataset.title}｜Agent 协作实验室`;
+  }
+  const next = () => go(current + 1);
+  const prev = () => go(current - 1);
+  document.getElementById('next').addEventListener('click', next);
+  document.getElementById('prev').addEventListener('click', prev);
+
+  function closeOverlays() { overview.classList.remove('open'); help.classList.remove('open'); notes.classList.remove('open'); }
+  function toggleOverlay(el) { const open = !el.classList.contains('open'); closeOverlays(); if (open) el.classList.add('open'); }
+  document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', closeOverlays));
+
+  document.addEventListener('keydown', e => {
+    const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+    if (e.key === 'Escape') return closeOverlays();
+    if (typing) return;
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); next(); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    if (e.key.toLowerCase() === 'o') toggleOverlay(overview);
+    if (e.key.toLowerCase() === 'h') toggleOverlay(help);
+    if (e.key.toLowerCase() === 'n') toggleOverlay(notes);
+    if (e.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.();
+    }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End') go(slides.length - 1);
+  });
+  document.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 55) dx < 0 ? next() : prev();
+    touchX = null;
+  }, {passive:true});
+
+  document.getElementById('truthPulse').addEventListener('click', () => {
+    const status = document.getElementById('truthStatus');
+    const steps = ['读取工具证据…', '发现 2 条冲突…', '把未知事实标记为待确认', '表达已更新：可信度来自证据'];
+    let i = 0; status.textContent = steps[i];
+    const timer = setInterval(() => { i++; if (i >= steps.length) { clearInterval(timer); toast('核验完成'); return; } status.textContent = steps[i]; }, 650);
+  });
+
+  document.querySelectorAll('.chain-node').forEach((node, i) => node.addEventListener('click', () => {
+    document.querySelectorAll('.chain-node').forEach(n => n.classList.remove('active'));
+    node.classList.add('active');
+    document.getElementById('chainDetail').innerHTML = `<strong>${pad(i + 1)} ${node.querySelector('strong').textContent}：</strong>${node.dataset.detail}`;
+  }));
+
+  document.querySelectorAll('.role-tab').forEach((tab, i) => tab.addEventListener('click', () => {
+    document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active');
+    document.getElementById('roleKicker').textContent = `ROLE ${pad(i + 1)}`;
+    document.getElementById('roleTitle').textContent = tab.dataset.title;
+    document.getElementById('roleText').textContent = tab.dataset.text;
+    document.getElementById('roleIcon').textContent = tab.dataset.icon;
+  }));
+
+  document.getElementById('playTimeline').addEventListener('click', () => {
+    const cards = [...document.querySelectorAll('.time-card')];
+    const meter = document.getElementById('timelineMeter');
+    cards.forEach(c => { c.style.outline = ''; c.style.transform = ''; }); meter.style.width = '0';
+    cards.forEach((c, i) => setTimeout(() => {
+      c.style.outline = '3px solid var(--green)'; c.style.transform = 'translateY(-5px)'; meter.style.width = `${((i + 1) / cards.length) * 100}%`;
+      if (i > 0) { cards[i - 1].style.outline = ''; cards[i - 1].style.transform = ''; }
+      if (i === cards.length - 1) setTimeout(() => toast('90 分钟节奏预演完成'), 500);
+    }, i * 520));
+  });
+
+  const draftItems = [...document.querySelectorAll('.draft-item')];
+  const flagItem = item => {
+    item.classList.toggle('flagged');
+    const active = draftItems.filter(x => x.classList.contains('flagged'));
+    document.getElementById('flagCount').textContent = active.length;
+    const log = document.getElementById('issueLog');
+    log.innerHTML = active.length ? active.map(x => `<div class="issue on">${x.dataset.issue}</div>`).join('') : '<div class="issue">等待你标记第一条可疑内容</div><div class="issue">关键数字必须来自工具或资料</div><div class="issue">未知事实应明确写“待确认”</div><div class="issue">冲突内容必须修订后才能发布</div>';
+    if (active.length === 4) toast('已找到全部 4 处问题');
+  };
+  draftItems.forEach(item => {
+    item.addEventListener('click', () => flagItem(item));
+    item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flagItem(item); } });
+  });
+
+  document.getElementById('runCheck').addEventListener('click', e => {
+    const scan = document.getElementById('scanBox');
+    const log = document.getElementById('checkLog');
+    const runButton = e.currentTarget;
+    runButton.disabled = true; scan.classList.remove('running'); void scan.offsetWidth; scan.classList.add('running');
+    const lines = ['get_inventory_summary → 9 类 / 187 件','list_low_stock(threshold=5) → 键盘 2，无线鼠标 1','get_safety_rules → 返回 3 条已备案规则','对比初稿事实 → 发现冲突 2 条','重写未知信息 → 标记待管理员确认'];
+    log.innerHTML = '';
+    lines.forEach((line, i) => setTimeout(() => { log.insertAdjacentHTML('beforeend', `<div class="logline">${line}</div>`); }, i * 430));
+    setTimeout(() => {
+      document.getElementById('verifiedNum').textContent = '7';
+      document.getElementById('missingNum').textContent = '2';
+      document.getElementById('conflictNum').textContent = '0';
+      runButton.disabled = false; toast('事实核验完成：2 条冲突已修订');
+    }, lines.length * 430 + 250);
+  });
+
+  document.querySelectorAll('.code-tab').forEach(tab => tab.addEventListener('click', () => {
+    document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active');
+    const after = tab.dataset.code === 'after';
+    document.getElementById('codeBefore').hidden = after; document.getElementById('codeAfter').hidden = !after;
+  }));
+
+  const inventory = [
+    {name:'无线鼠标',qty:1,loc:'A-02'},{name:'有线鼠标',qty:8,loc:'A-03'},{name:'机械键盘',qty:2,loc:'B-01'},
+    {name:'薄膜键盘',qty:11,loc:'B-02'},{name:'显示器',qty:7,loc:'C-01'},{name:'HDMI 线',qty:4,loc:'C-03'},
+    {name:'网线',qty:22,loc:'D-01'},{name:'USB-C 转接器',qty:3,loc:'D-04'},{name:'标签纸',qty:129,loc:'E-01'}
+  ];
+  const renderResults = (rows, meta) => {
+    document.getElementById('resultMeta').textContent = meta;
+    document.getElementById('resultList').innerHTML = rows.length ? rows.map(x => `<div class="result-row"><strong>${x.name}</strong><span class="loc">${x.loc}</span><span class="qty">${x.qty}</span></div>`).join('') : '<div class="empty"><div><div class="number">0</div><p>没有匹配结果<br><span class="muted">请检查参数或返回契约</span></p></div></div>';
+  };
+  const doSearch = () => {
+    const term = document.getElementById('keyword').value.trim().toLowerCase();
+    const rows = term ? inventory.filter(x => x.name.toLowerCase().includes(term)) : [];
+    renderResults(rows, `keyword=${term || '空'}`);
+  };
+  document.getElementById('searchBtn').addEventListener('click', doSearch);
+  document.getElementById('keyword').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+  document.getElementById('threshold').addEventListener('input', e => document.getElementById('thresholdValue').textContent = e.target.value);
+  document.getElementById('lowBtn').addEventListener('click', () => {
+    const threshold = Number(document.getElementById('threshold').value);
+    renderResults(inventory.filter(x => x.qty < threshold), `qty < ${threshold}`);
+  });
+  renderResults(inventory.filter(x => x.name.includes('鼠标')), 'keyword=鼠标');
+
+  document.querySelectorAll('.choose').forEach(btn => btn.addEventListener('click', () => {
+    const card = btn.closest('.decision-card');
+    const good = btn.dataset.answer === btn.dataset.correct;
+    const feedback = card.querySelector('.feedback');
+    feedback.className = `feedback ${good ? 'ok' : 'no'}`;
+    feedback.textContent = good ? (btn.dataset.correct === 'yes' ? '正确：只读查询可直接执行，并保留日志。' : '正确：需要明确范围、权限、二次确认和审计。') : '再想想：读取与写入的风险等级不同。';
+  }));
+
+  const sliders = [...document.querySelectorAll('.slider-row input')];
+  function updateScore() {
+    let total = 0;
+    sliders.forEach(s => { s.nextElementSibling.value = s.value; s.nextElementSibling.textContent = s.value; total += Number(s.value); });
+    document.getElementById('totalScore').textContent = total;
+    document.getElementById('totalRing').style.setProperty('--score', `${total}%`);
+    const gateValues = sliders.filter(s => s.dataset.gate).map(s => Number(s.value));
+    const gates = gateValues.every(v => v > 0);
+    const pass = total >= 70 && gates;
+    document.getElementById('passState').textContent = pass ? '通过：总分与硬门槛均满足' : '未通过：检查总分或硬门槛';
+    document.getElementById('passState').style.background = pass ? 'var(--green)' : 'var(--danger)';
+    document.getElementById('passState').style.color = '#000';
+    document.getElementById('gateText').textContent = !gates ? '三项硬门槛中至少一项没有证据，团队作品不能替代个人通过。' : total < 70 ? '硬门槛有证据，但总分仍低于 70。' : '达到 70 分，且三项硬门槛均有证据。';
+  }
+  sliders.forEach(s => s.addEventListener('input', updateScore)); updateScore();
+
+  const taskChecks = [...document.querySelectorAll('#taskList input')];
+  function saveTasks() {
+    const state = Object.fromEntries(taskChecks.map(x => [x.dataset.task, x.checked]));
+    try { localStorage.setItem('agent-lab-week1-tasks', JSON.stringify(state)); } catch (_) {}
+    taskChecks.forEach(x => x.closest('.check-item').classList.toggle('done', x.checked));
+    document.getElementById('completionNum').textContent = `${Math.round(taskChecks.filter(x => x.checked).length / taskChecks.length * 100)}%`;
+  }
+  try {
+    const saved = JSON.parse(localStorage.getItem('agent-lab-week1-tasks') || '{}');
+    taskChecks.forEach(x => x.checked = Boolean(saved[x.dataset.task]));
+  } catch (_) {}
+  taskChecks.forEach(x => x.addEventListener('change', saveTasks));
+  document.getElementById('resetTasks').addEventListener('click', () => { taskChecks.forEach(x => x.checked = false); saveTasks(); toast('清单已重置'); });
+  saveTasks(); go(current);
+})();
+</script>
+</body>
+</html>
+
+
+
+
