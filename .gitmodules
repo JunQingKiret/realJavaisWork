@@ -1,3 +1,7 @@
 [submodule "seesions/lesson-01-java-basics"]
 path = seesions/lesson-01-java-basics
 url = https://github.com/JunQingKiret/lesson-01-java-basics.git
+
+[submodule "seesions/lesson-02-agent-warehouse"]
+path = seesions/lesson-02-agent-warehouse
+url = https://github.com/JunQingKiret/lesson-02-agent-warehouse.git
